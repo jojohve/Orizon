@@ -1,52 +1,48 @@
 <?php
-require_once 'database.php';
-
-class Paese
-{
-    public $id;
-    public $paese;
+class Country {
     private $conn;
+    private $table_name = "Paesi";
 
-    public function __construct($conn, $id = null, $paese = null)
-    {
-        $this->conn = $conn;
+    public $id;
+    public $country;
+
+    // Costruttore
+    public function __construct($db, $id = null, $country = null) {
+        $this->conn = $db;
         $this->id = $id;
-        $this->paese = $paese;
+        $this->country = $country;
     }
 
-    public function getAllCountries()
-    {
-        $sql = "SELECT * FROM Paesi";
-        $result = $this->conn->query($sql);
-
-        $countries = array();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $countries[] = $row;
-            }
-        }
-        return $countries;
+    // Creare un nuovo paese
+    public function createCountry() {
+        $query = "INSERT INTO " . $this->table_name . " (Paese) VALUES (:country)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':country', $this->country);
+        return $stmt->execute();
     }
 
-    public function createCountry()
-    {
-        $sql = "INSERT INTO Paesi (Paese) VALUES ('$this->paese')";
-        if ($this->conn->query($sql) === TRUE) {
-            return $this->conn->insert_id;
-        } else {
-            return false;
-        }
+    // Leggere tutti i paesi
+    public function getAllCountries() {
+        $query = "SELECT id, Paese FROM " . $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateCountry()
-    {
-        $sql = "UPDATE Paesi SET Paese='$this->paese' WHERE id=$this->id";
-        return $this->conn->query($sql);
+    // Aggiornare un paese
+    public function updateCountry() {
+        $query = "UPDATE " . $this->table_name . " SET Paese = :country WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':country', $this->country);
+        $stmt->bindParam(':id', $this->id);
+        return $stmt->execute();
     }
 
-    public function deleteCountry()
-    {
-        $sql = "DELETE FROM Paesi WHERE id=$this->id";
-        return $this->conn->query($sql);
+    // Eliminare un paese
+    public function deleteCountry() {
+        $query = "DELETE FROM " . $this->table_name . " WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':id', $this->id);
+        return $stmt->execute();
     }
 }

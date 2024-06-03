@@ -1,17 +1,20 @@
 <?php
 include 'database.php';
+include 'table.php';
 
-$sql = "SELECT * FROM Paesi";
-$result = $conn->query($sql);
+// Creare un'istanza di connessione al database
+$dbConnection = new DBConnection();
 
-if ($result->num_rows > 0) {
-    $countries = array();
-    while ($row = $result->fetch_assoc()) {
-        $countries[] = $row;
-    }
-    header('Content-Type: application/json');
-    echo json_encode($countries);
-} else {
-    echo json_encode(array('message' => 'Nessun paese trovato.'));
-}
-$conn->close();
+// Creare un'istanza della classe Country
+$countryModel = new Country($dbConnection->conn);
+
+// Ottenere tutti i paesi
+$countries = $countryModel->getAllCountries();
+
+// Impostare l'intestazione per il contenuto JSON
+header('Content-Type: application/json');
+echo json_encode($countries);
+
+// Chiudere la connessione al database
+$dbConnection->closeConnection();
+?>

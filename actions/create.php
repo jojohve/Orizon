@@ -1,5 +1,5 @@
 <?php
-include 'database.php';
+include 'table.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['paese'])) {
     $paese = $_POST['paese'];
