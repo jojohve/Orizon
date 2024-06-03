@@ -1,6 +1,6 @@
 <?php
-include 'db_connection.php';
-include 'modello.php';
+include 'database.php';
+include 'table.php';
 
 // Creare un'istanza della classe DBConnection
 $dbConnection = new DBConnection();
