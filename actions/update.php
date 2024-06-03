@@ -1,18 +1,22 @@
 <?php
+include 'database.php';
 include 'table.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id']) && isset($_POST['paese'])) {
-    $id = $_POST['id'];
-    $paese = $_POST['paese'];
+// Creare un'istanza della classe DBConnection
+$dbConnection = new DBConnection();
 
-    $sql = "UPDATE Paesi SET Paese='$paese' WHERE id=$id";
+// Ottenere la connessione al database
+$connection = $dbConnection->getConnection();
 
-    if ($conn->query($sql) === TRUE) {
-        echo json_encode(array('message' => 'Paese aggiornato con successo.'));
-    } else {
-        echo json_encode(array('message' => 'Errore durante l\'aggiornamento del paese: ' . $conn->error));
-    }
-} else {
-    echo json_encode(array('message' => 'Parametri mancanti.'));
-}
-$conn->close();
+// Creare un'istanza della classe Country passando la connessione al database
+$countryModel = new Country($connection);
+
+// Ottenere tutti i paesi
+$countries = $countryModel->updateCountry();
+
+// Impostare l'intestazione per il contenuto JSON
+header('Content-Type: application/json');
+echo json_encode($countries);
+
+// Chiudere la connessione al database
+$dbConnection->closeConnection();
