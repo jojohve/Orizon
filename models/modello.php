@@ -1,23 +1,35 @@
 <?php
-class Country {
+class Country
+{
     private $conn;
     private $table_name = "paesi";
 
     public $id;
     public $nome_paese;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function createCountry() {
+    public function readCountries()
+    {
+        $query = "SELECT Id, Nome_paese FROM " . $this->table_name;
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function createCountry()
+    {
         $query = "INSERT INTO " . $this->table_name . " (Nome_paese) VALUES (:Nome_paese)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':Nome_paese', $this->nome_paese);
         return $stmt->execute();
     }
 
-    public function updateCountry() {
+    public function updateCountry()
+    {
         $query = "UPDATE " . $this->table_name . " SET Nome_paese = :Nome_paese WHERE Id = :Id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':Nome_paese', $this->nome_paese);
@@ -25,7 +37,8 @@ class Country {
         return $stmt->execute();
     }
 
-    public function deleteCountry() {
+    public function deleteCountry()
+    {
         $query = "DELETE FROM " . $this->table_name . " WHERE Id = :Id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':Id', $this->id);
@@ -33,7 +46,8 @@ class Country {
     }
 }
 
-class Trip {
+class Trip
+{
     private $conn;
     private $table_name = "viaggi";
 
@@ -41,11 +55,13 @@ class Trip {
     public $posti_disponibili;
     public $paesi_ids;
 
-    public function __construct($db) {
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    public function createTrip() {
+    public function createTrip()
+    {
         $this->conn->beginTransaction();
         try {
             $query = "INSERT INTO " . $this->table_name . " (Posti_disponibili) VALUES (:Posti_disponibili)";
@@ -70,7 +86,8 @@ class Trip {
         }
     }
 
-    public function updateTrip() {
+    public function updateTrip()
+    {
         $this->conn->beginTransaction();
         try {
             $query = "UPDATE " . $this->table_name . " SET Posti_disponibili = :Posti_disponibili WHERE Id = :Id";
@@ -100,14 +117,16 @@ class Trip {
         }
     }
 
-    public function deleteTrip() {
+    public function deleteTrip()
+    {
         $query = "DELETE FROM " . $this->table_name . " WHERE Id = :Id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':Id', $this->id);
         return $stmt->execute();
     }
 
-    public function getTrips($paese_id = null, $posti_disponibili = null) {
+    public function getTrips($paese_id = null, $posti_disponibili = null)
+    {
         $query = "SELECT v.Id, v.Posti_disponibili, GROUP_CONCAT(p.Nome_paese SEPARATOR ', ') AS paesi
                   FROM viaggi v
                   JOIN paesi_nei_viaggi vp ON v.Id = vp.viaggio_id
