@@ -1,9 +1,9 @@
 <?php
 class DBConnection {
     private $servername = "localhost";
-    private $username = "root"; // Modifica con il tuo nome utente MySQL
-    private $password = ""; // Modifica con la tua password MySQL
-    private $database = "Orizon"; // Modifica con il nome del tuo database
+    private $username = "root";
+    private $password = "";
+    private $database = "orizon";
     private $conn;
 
     public function __construct() {
