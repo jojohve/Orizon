@@ -21,4 +21,26 @@ class Country
         $stmt->execute();
         return $stmt;
     }
+
+    // CREATE COUNTRY
+    function createCountry()
+    {
+        $query = "INSERT INTO
+                     . $this->table_name . 
+                VALUES
+                     Id=:Id, Nome_paese=:Nome_paese;";
+
+        $stmt = $this->conn->prepare($query);
+
+        $this->Id = htmlspecialchars(strip_tags($this->Id));
+        $this->Nome_paese = htmlspecialchars(strip_tags($this->Nome_paese));
+
+        $stmt->bindParam(":Id", $this->Id);
+        $stmt->bindParam(":Nome_paese", $this->Nome_paese);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
 }
