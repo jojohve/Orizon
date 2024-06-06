@@ -127,6 +127,13 @@ class Trip
         $stmt->bindParam(":paesi_ids", $this->paesi_ids);
 
         if ($stmt->execute()) {
+            foreach ($this->paesi_ids as $paese_id) {
+                $query_rel = "INSERT INTO paesi_nei_viaggi (viaggio_id, paese_id) VALUES (:viaggio_id, :paese_id)";
+                $stmt_rel = $this->conn->prepare($query_rel);
+                $stmt_rel->bindParam(':viaggio_id', $this->Id);
+                $stmt_rel->bindParam(':paese_id', $paese_id);
+                $stmt_rel->execute();
+            }
             return true;
         }
         return false;
@@ -149,6 +156,17 @@ class Trip
         $stmt->bindParam(":Posti_disponibili", $this->Posti_disponibili);
 
         if ($stmt->execute()) {
+            $query_del_rel = "DELETE FROM paesi_nei_viaggi WHERE viaggio_id = :viaggio_id";
+            $stmt_del_rel = $this->conn->prepare($query_del_rel);
+            $stmt_del_rel->bindParam(':viaggio_id', $this->Id);
+            $stmt_del_rel->execute();
+            foreach ($this->paesi_ids as $paese_id) {
+                $query_rel = "INSERT INTO paesi_nei_viaggi (viaggio_id, paese_id) VALUES (:viaggio_id, :paese_id)";
+                $stmt_rel = $this->conn->prepare($query_rel);
+                $stmt_rel->bindParam(':viaggio_id', $this->Id);
+                $stmt_rel->bindParam(':paese_id', $paese_id);
+                $stmt_rel->execute();
+            }
             return true;
         }
         return false;

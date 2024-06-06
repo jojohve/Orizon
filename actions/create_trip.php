@@ -16,7 +16,8 @@ if(
     !empty($data->Id) &&
     !empty($data->Nome_viaggio) &&
     !empty($data->Posti_disponibili) &&
-    !empty($data->paesi_ids)
+    !empty($data->paesi_ids) &&
+    is_array($data->paesi_ids) 
 ){
     $viaggio->Id = $data->Id;
     $viaggio->Nome_viaggio = $data->Nome_viaggio;
