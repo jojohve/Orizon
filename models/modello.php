@@ -52,8 +52,9 @@ class Trip
     private $table_name = "viaggi";
 
     public $id;
+    public $nome_viaggio;
     public $posti_disponibili;
-    public $paesi_ids;
+    public $paese_id;
 
     public function __construct($db)
     {
@@ -64,15 +65,23 @@ class Trip
     {
         $this->conn->beginTransaction();
         try {
-            $query = "INSERT INTO " . $this->table_name . " (Posti_disponibili) VALUES (:Posti_disponibili)";
+            $query = "INSERT INTO " . $this->table_name . " (id, nome_viaggio, posti_disponibili) VALUES (:id, :nome_viaggio, :posti_disponibili)";
+
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(':Posti_disponibili', $this->posti_disponibili);
+
+            $this->id = htmlspecialchars(strip_tags($this->id));
+            $this->nome_viaggio = htmlspecialchars(strip_tags($this->nome_viaggio));
+            $this->posti_disponibili = htmlspecialchars(strip_tags($this->posti_disponibili));
+
+            $stmt->bindParam(":id", $this->id);
+            $stmt->bindParam(":Nome_viaggio", $this->nome_viaggio);
+            $stmt->bindParam(":posti_disponibili", $this->posti_disponibili);
             $stmt->execute();
             $trip_id = $this->conn->lastInsertId();
 
             $query = "INSERT INTO paesi_nei_viaggi (viaggio_id, paese_id) VALUES (:viaggio_id, :paese_id)";
             $stmt = $this->conn->prepare($query);
-            foreach ($this->paesi_ids as $paese_id) {
+            foreach ($this->paese_id as $paese_id) {
                 $stmt->bindParam(':viaggio_id', $trip_id);
                 $stmt->bindParam(':paese_id', $paese_id);
                 $stmt->execute();
@@ -103,7 +112,7 @@ class Trip
 
             $query = "INSERT INTO paesi_nei_viaggi (viaggio_id, paese_id) VALUES (:viaggio_id, :paese_id)";
             $stmt = $this->conn->prepare($query);
-            foreach ($this->paesi_ids as $paese_id) {
+            foreach ($this->paese_id as $paese_id) {
                 $stmt->bindParam(':viaggio_id', $this->id);
                 $stmt->bindParam(':paese_id', $paese_id);
                 $stmt->execute();
