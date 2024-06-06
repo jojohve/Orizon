@@ -97,15 +97,47 @@ class Trip
     }
 
     // READ ALL TRIPS
-    function readTrips()
+    function readTrips($Nome_paese = null, $Posti_disponibili = null)
     {
-        $query = "SELECT v.Id, v.Nome_viaggio, v.Posti_disponibili, GROUP_CONCAT(p.Nome_paese SEPARATOR ', ') as paesi
-              FROM viaggi v
-              LEFT JOIN paesi_nei_viaggi vp ON v.Id = vp.viaggio_id
-              LEFT JOIN paesi p ON vp.paese_id = p.Id
-              GROUP BY v.Id";
+        $query = "
+            SELECT
+                viaggi.Id,
+                viaggi.Nome_viaggio,
+                viaggi.Posti_disponibili,
+                GROUP_CONCAT(paesi.Nome_paese) AS Paesi
+            FROM
+                viaggi
+            LEFT JOIN
+                paesi_nei_viaggi ON viaggi.Id = paesi_nei_viaggi.viaggio_id
+            LEFT JOIN
+                paesi ON paesi_nei_viaggi.paese_id = paesi.Id";
+
+        $conditions = [];
+        if (!is_null($Nome_paese)) {
+            $conditions[] = "paesi.Nome_paese LIKE :Nome_paese";
+        }
+        if (!is_null($Posti_disponibili)) {
+            $conditions[] = "viaggi.Posti_disponibili = :Posti_disponibili";
+        }
+
+        if (count($conditions) > 0) {
+            $query .= " WHERE " . implode(' AND ', $conditions);
+        }
+
+        $query .= " GROUP BY viaggi.Id, viaggi.Nome_viaggio, viaggi.Posti_disponibili";
+
         $stmt = $this->conn->prepare($query);
+
+        if (!is_null($Nome_paese)) {
+            $Nome_paese = "%{$Nome_paese}%";
+            $stmt->bindParam(':Nome_paese', $Nome_paese);
+        }
+        if (!is_null($Posti_disponibili)) {
+            $stmt->bindParam(':Posti_disponibili', $Posti_disponibili);
+        }
+
         $stmt->execute();
+
         return $stmt;
     }
 
