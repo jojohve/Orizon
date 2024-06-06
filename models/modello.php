@@ -90,6 +90,7 @@ class Trip
     public $Id;
     public $Nome_viaggio;
     public $Posti_disponibili;
+    public $paesi_ids = [];
     public function __construct($db)
     {
         $this->conn = $db;
@@ -100,7 +101,7 @@ class Trip
     {
         $query = "SELECT v.Id, v.Nome_viaggio, v.Posti_disponibili, GROUP_CONCAT(p.Nome_paese SEPARATOR ', ') as paesi
               FROM viaggi v
-              LEFT JOIN paesi_nel_viaggio vp ON v.Id = vp.viaggio_id
+              LEFT JOIN paesi_nei_viaggi vp ON v.Id = vp.viaggio_id
               LEFT JOIN paesi p ON vp.paese_id = p.Id
               GROUP BY v.Id";
         $stmt = $this->conn->prepare($query);
@@ -111,7 +112,7 @@ class Trip
     // CREATE TRIP
     function createTrip()
     {
-        $query = "INSERT INTO " . $this->table_name . " (Id, Nome_viaggio, Posti_disponibili) VALUES (:Id, :Nome_viaggio, :Posti_disponibili)";
+        $query = "INSERT INTO viaggi (Nome_viaggio, Posti_disponibili) VALUES (:Nome_viaggio, :Posti_disponibili)";
 
         $stmt = $this->conn->prepare($query);
 
@@ -133,9 +134,7 @@ class Trip
     function updateTrip()
     {
 
-        $query = "UPDATE " . $this->table_name . " 
-        SET Nome_viaggio = :Nome_viaggio , Posti_disponibili = :Posti_disponibili
-        WHERE Id = :Id";
+        $query = "UPDATE viaggi SET Nome_viaggio = :Nome_viaggio, Posti_disponibili = :Posti_disponibili WHERE Id = :Id";
 
         $stmt = $this->conn->prepare($query);
 
@@ -157,7 +156,7 @@ class Trip
     function deleteTrip()
     {
 
-        $query = "DELETE FROM " . $this->table_name . " WHERE Id = :Id";
+        $query = "DELETE FROM viaggi WHERE Id = :Id";
 
         $stmt = $this->conn->prepare($query);
 
