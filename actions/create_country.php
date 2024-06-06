@@ -12,21 +12,23 @@ $database = new Database();
 $db = $database->getConnection();
 $paese = new Country($db);
 $data = json_decode(file_get_contents("php://input"));
-if (
+if(
     !empty($data->Id) &&
-    !empty($data->Nome_Paese)
-) {
+    !empty($data->Nome_paese)
+){
     $paese->Id = $data->Id;
-    $paese->Nome_Paese = $data->Nome_Paese;
-
-    if ($paese->createCountry()) {
+    $paese->Nome_paese = $data->Nome_paese;
+ 
+    if($paese->createCountry()){
         http_response_code(201);
         echo json_encode(array("message" => "Paese creato correttamente."));
-    } else {
+    }
+    else{
         http_response_code(503);
         echo json_encode(array("message" => "Impossibile creare il Paese."));
     }
-} else {
+}
+else{
     http_response_code(400);
     echo json_encode(array("message" => "Impossibile creare il Paese, i dati sono incompleti."));
 }
