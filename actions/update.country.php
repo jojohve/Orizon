@@ -6,8 +6,8 @@ $dbConnection = new DBConnection();
 $connection = $dbConnection->getConnection();
 
 $countryModel = new Country($connection);
-$countryModel->id = $_POST['id'];
-$countryModel->nome_paese = $_POST['nome_paese'];
+$countryModel->id = $_POST['Id'];
+$countryModel->nome_paese = $_POST['Nome_paese'];
 
 if ($countryModel->updateCountry()) {
     http_response_code(200);

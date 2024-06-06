@@ -6,7 +6,7 @@ $dbConnection = new DBConnection();
 $connection = $dbConnection->getConnection();
 
 $tripModel = new Trip($connection);
-$tripModel->id = $_POST['id'];
+$tripModel->id = $_POST['Id'];
 
 if ($tripModel->deleteTrip()) {
     http_response_code(200);

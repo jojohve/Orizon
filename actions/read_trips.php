@@ -7,7 +7,7 @@ $connection = $dbConnection->getConnection();
 
 $tripModel = new Trip($connection);
 $country_id = isset($_GET['paese_id']) ? $_GET['paese_id'] : null;
-$available_places = isset($_GET['posti_disponibili']) ? $_GET['posti_disponibili'] : null;
+$available_places = isset($_GET['Posti_disponibili']) ? $_GET['Posti_disponibili'] : null;
 
 $trips = $tripModel->getTrips($country_id, $available_places);
 

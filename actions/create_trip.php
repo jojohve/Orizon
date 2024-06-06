@@ -6,8 +6,8 @@ $dbConnection = new DBConnection();
 $connection = $dbConnection->getConnection();
 
 $tripModel = new Trip($connection);
-$tripModel->posti_disponibili = $_POST['posti_disponibili'];
-$tripModel->paesi_ids = explode(',', $_POST['paesi_ids']);
+$tripModel->posti_disponibili = $_POST['Posti_disponibili'];
+$tripModel->paesi_ids = explode(',', $_POST['paese_id']);
 
 if ($tripModel->createTrip()) {
     http_response_code(201);

@@ -6,9 +6,9 @@ $dbConnection = new DBConnection();
 $connection = $dbConnection->getConnection();
 
 $tripModel = new Trip($connection);
-$tripModel->id = $_POST['id'];
-$tripModel->posti_disponibili = $_POST['posti_disponibili'];
-$tripModel->paesi_ids = explode(',', $_POST['paesi_ids']);
+$tripModel->id = $_POST['Id'];
+$tripModel->posti_disponibili = $_POST['Posti_disponibili'];
+$tripModel->paesi_ids = explode(',', $_POST['paese_id']);
 
 if ($tripModel->updateTrip()) {
     http_response_code(200);

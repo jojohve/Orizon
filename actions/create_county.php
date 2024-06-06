@@ -6,7 +6,7 @@ $dbConnection = new DBConnection();
 $connection = $dbConnection->getConnection();
 
 $countryModel = new Country($connection);
-$countryModel->nome_paese = $_POST['nome_paese'];
+$countryModel->nome_paese = $_POST['Nome_paese'];
 
 if ($countryModel->createCountry()) {
     http_response_code(201);

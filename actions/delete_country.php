@@ -6,7 +6,7 @@ $dbConnection = new DBConnection();
 $connection = $dbConnection->getConnection();
 
 $countryModel = new Country($connection);
-$countryModel->id = $_POST['id'];
+$countryModel->id = $_POST['Id'];
 
 if ($countryModel->deleteCountry()) {
     http_response_code(200);
