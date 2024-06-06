@@ -112,19 +112,17 @@ class Trip
     // CREATE TRIP
     function createTrip()
     {
-        $query = "INSERT INTO viaggi (Id, Nome_viaggio, Posti_disponibili, paesi_ids) VALUES (:Id, :Nome_viaggio, :Posti_disponibili, :paesi_ids)";
+        $query = "INSERT INTO viaggi (Id, Nome_viaggio, Posti_disponibili) VALUES (:Id, :Nome_viaggio, :Posti_disponibili)";
 
         $stmt = $this->conn->prepare($query);
 
         $this->Id = htmlspecialchars(strip_tags($this->Id));
         $this->Nome_viaggio = htmlspecialchars(strip_tags($this->Nome_viaggio));
         $this->Posti_disponibili = htmlspecialchars(strip_tags($this->Posti_disponibili));
-        $this->paesi_ids = htmlspecialchars(strip_tags($this->paesi_ids));
 
         $stmt->bindParam(":Id", $this->Id);
         $stmt->bindParam(":Nome_viaggio", $this->Nome_viaggio);
         $stmt->bindParam(":Posti_disponibili", $this->Posti_disponibili);
-        $stmt->bindParam(":paesi_ids", $this->paesi_ids);
 
         if ($stmt->execute()) {
             foreach ($this->paesi_ids as $paese_id) {
