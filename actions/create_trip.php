@@ -15,11 +15,13 @@ $data = json_decode(file_get_contents("php://input"));
 if(
     !empty($data->Id) &&
     !empty($data->Nome_viaggio) &&
-    !empty($data->Posti_disponibili)
+    !empty($data->Posti_disponibili) &&
+    !empty($data->paesi_ids)
 ){
     $viaggio->Id = $data->Id;
     $viaggio->Nome_viaggio = $data->Nome_viaggio;
     $viaggio->Posti_disponibili = $data->Posti_disponibili;
+    $viaggio->paesi_ids = $data->paesi_ids;
  
     if($viaggio->createTrip()){
         http_response_code(201);

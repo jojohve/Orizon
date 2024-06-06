@@ -112,17 +112,19 @@ class Trip
     // CREATE TRIP
     function createTrip()
     {
-        $query = "INSERT INTO viaggi (Nome_viaggio, Posti_disponibili) VALUES (:Nome_viaggio, :Posti_disponibili)";
+        $query = "INSERT INTO viaggi (Id, Nome_viaggio, Posti_disponibili, paesi_ids) VALUES (:Id, :Nome_viaggio, :Posti_disponibili, :paesi_ids)";
 
         $stmt = $this->conn->prepare($query);
 
         $this->Id = htmlspecialchars(strip_tags($this->Id));
         $this->Nome_viaggio = htmlspecialchars(strip_tags($this->Nome_viaggio));
         $this->Posti_disponibili = htmlspecialchars(strip_tags($this->Posti_disponibili));
+        $this->paesi_ids = htmlspecialchars(strip_tags($this->paesi_ids));
 
         $stmt->bindParam(":Id", $this->Id);
         $stmt->bindParam(":Nome_viaggio", $this->Nome_viaggio);
         $stmt->bindParam(":Posti_disponibili", $this->Posti_disponibili);
+        $stmt->bindParam(":paesi_ids", $this->paesi_ids);
 
         if ($stmt->execute()) {
             return true;
@@ -155,18 +157,17 @@ class Trip
     //DELETE TRIP
     function deleteTrip()
     {
+        $query_rel = "DELETE FROM paesi_nei_viaggi WHERE viaggio_id = :viaggio_id";
+        $stmt_rel = $this->conn->prepare($query_rel);
+        $stmt_rel->bindParam(':viaggio_id', $this->Id);
 
-        $query = "DELETE FROM viaggi WHERE Id = :Id";
-
-        $stmt = $this->conn->prepare($query);
-
-        $this->Id = htmlspecialchars(strip_tags($this->Id));
-
-
-        $stmt->bindParam(':Id', $this->Id);
-
-        if ($stmt->execute()) {
-            return true;
+        if ($stmt_rel->execute()) {
+            $query = "DELETE FROM " . $this->table_name . " WHERE Id = :Id";
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(':Id', $this->Id);
+            if ($stmt->execute()) {
+                return true;
+            }
         }
         return false;
     }

@@ -18,6 +18,7 @@ $data = json_decode(file_get_contents("php://input"));
 $viaggio->Id = $data->Id;
 $viaggio->Nome_viaggio = $data->Nome_viaggio;
 $viaggio->Posti_disponibili = $data->Posti_disponibili;
+$viaggio->paesi_ids = $data->paesi_ids;
 
 if ($viaggio->updateTrip()) {
     http_response_code(200);
