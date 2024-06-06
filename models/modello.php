@@ -71,10 +71,10 @@ class Country
 
         $stmt = $this->conn->prepare($query);
 
-        $this->ISBN = htmlspecialchars(strip_tags($this->Id));
+        $this->Id = htmlspecialchars(strip_tags($this->Id));
 
 
-        $stmt->bindParam(1, $this->Id);
+        $stmt->bindParam(':Id', $this->Id);
 
         if ($stmt->execute()) {
             return true;
