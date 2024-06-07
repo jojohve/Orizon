@@ -5,8 +5,8 @@ header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
  
-include_once 'db_connection.php';
-include_once 'modello.php';
+include_once '../config/db_connection.php';
+include_once '../models/modello.php';
  
 $database = new Database();
 $db = $database->getConnection();
