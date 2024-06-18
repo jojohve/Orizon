@@ -1,10 +1,10 @@
 <?php
 class Database
 {
-    private $host = "localhost";
-    private $db_name = "orizon";
-    private $username = "root";
-    private $password = "";
+    private $host = getenv('DB_HOST');
+    private $db_name = getenv('DB_DATABASE');
+    private $username = getenv('DB_USERNAME');
+    private $password = getenv('DB_PASSWORD');
     public $conn;
     public function getConnection()
     {
