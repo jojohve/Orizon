@@ -6,18 +6,18 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
  
 include_once '../config/db_connection.php';
-include_once '../models/modello.php';
+include_once '../models/model.php';
  
 $database = new Database();
 $db = $database->getConnection();
  
-$viaggio = new Trip($db);
+$trip = new Trip($db);
  
 $data = json_decode(file_get_contents("php://input"));
  
-$viaggio->Id = $data->Id;
+$trip->Id = $data->Id;
  
-if($viaggio->deleteTrip()){
+if($trip->deleteTrip()){
     http_response_code(200);
     echo json_encode(array("risposta" => "Il Viaggio e' stato eliminato"));
 }else{

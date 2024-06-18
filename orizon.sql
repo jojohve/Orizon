@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Creato il: Giu 06, 2024 alle 17:53
+-- Creato il: Giu 18, 2024 alle 15:09
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -24,19 +24,19 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `paesi`
+-- Struttura della tabella `countries`
 --
 
-CREATE TABLE `paesi` (
+CREATE TABLE `countries` (
   `Id` int(11) NOT NULL,
-  `Nome_paese` varchar(50) DEFAULT NULL
+  `country_name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `paesi`
+-- Dump dei dati per la tabella `countries`
 --
 
-INSERT INTO `paesi` (`Id`, `Nome_paese`) VALUES
+INSERT INTO `countries` (`Id`, `country_name`) VALUES
 (1, 'Italy'),
 (2, 'France'),
 (3, 'Spain'),
@@ -47,19 +47,19 @@ INSERT INTO `paesi` (`Id`, `Nome_paese`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `paesi_nei_viaggi`
+-- Struttura della tabella `country_trip`
 --
 
-CREATE TABLE `paesi_nei_viaggi` (
-  `viaggio_id` int(11) NOT NULL,
-  `paese_id` int(11) NOT NULL
+CREATE TABLE `country_trip` (
+  `trip_id` int(11) NOT NULL,
+  `country_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `paesi_nei_viaggi`
+-- Dump dei dati per la tabella `country_trip`
 --
 
-INSERT INTO `paesi_nei_viaggi` (`viaggio_id`, `paese_id`) VALUES
+INSERT INTO `country_trip` (`trip_id`, `country_id`) VALUES
 (1, 3),
 (2, 1),
 (3, 1),
@@ -76,20 +76,20 @@ INSERT INTO `paesi_nei_viaggi` (`viaggio_id`, `paese_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struttura della tabella `viaggi`
+-- Struttura della tabella `trips`
 --
 
-CREATE TABLE `viaggi` (
+CREATE TABLE `trips` (
   `Id` int(11) NOT NULL,
-  `Nome_Viaggio` varchar(50) NOT NULL,
-  `Posti_disponibili` int(11) DEFAULT NULL
+  `trip_name` varchar(50) NOT NULL,
+  `availability` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dump dei dati per la tabella `viaggi`
+-- Dump dei dati per la tabella `trips`
 --
 
-INSERT INTO `viaggi` (`Id`, `Nome_Viaggio`, `Posti_disponibili`) VALUES
+INSERT INTO `trips` (`Id`, `trip_name`, `availability`) VALUES
 (1, 'Alicante', 20),
 (2, 'Naples', 5),
 (3, 'Costa Azzurra', 10),
@@ -101,22 +101,22 @@ INSERT INTO `viaggi` (`Id`, `Nome_Viaggio`, `Posti_disponibili`) VALUES
 --
 
 --
--- Indici per le tabelle `paesi`
+-- Indici per le tabelle `countries`
 --
-ALTER TABLE `paesi`
+ALTER TABLE `countries`
   ADD PRIMARY KEY (`Id`);
 
 --
--- Indici per le tabelle `paesi_nei_viaggi`
+-- Indici per le tabelle `country_trip`
 --
-ALTER TABLE `paesi_nei_viaggi`
-  ADD PRIMARY KEY (`viaggio_id`,`paese_id`),
-  ADD KEY `paese_id` (`paese_id`);
+ALTER TABLE `country_trip`
+  ADD PRIMARY KEY (`trip_id`,`country_id`),
+  ADD KEY `paese_id` (`country_id`);
 
 --
--- Indici per le tabelle `viaggi`
+-- Indici per le tabelle `trips`
 --
-ALTER TABLE `viaggi`
+ALTER TABLE `trips`
   ADD PRIMARY KEY (`Id`);
 
 --
@@ -124,15 +124,15 @@ ALTER TABLE `viaggi`
 --
 
 --
--- AUTO_INCREMENT per la tabella `paesi`
+-- AUTO_INCREMENT per la tabella `countries`
 --
-ALTER TABLE `paesi`
+ALTER TABLE `countries`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT per la tabella `viaggi`
+-- AUTO_INCREMENT per la tabella `trips`
 --
-ALTER TABLE `viaggi`
+ALTER TABLE `trips`
   MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
@@ -140,11 +140,11 @@ ALTER TABLE `viaggi`
 --
 
 --
--- Limiti per la tabella `paesi_nei_viaggi`
+-- Limiti per la tabella `country_trip`
 --
-ALTER TABLE `paesi_nei_viaggi`
-  ADD CONSTRAINT `paesi_nei_viaggi_ibfk_1` FOREIGN KEY (`paese_id`) REFERENCES `paesi` (`Id`),
-  ADD CONSTRAINT `paesi_nei_viaggi_ibfk_2` FOREIGN KEY (`viaggio_id`) REFERENCES `viaggi` (`Id`);
+ALTER TABLE `country_trip`
+  ADD CONSTRAINT `country_trip_ibfk_1` FOREIGN KEY (`country_id`) REFERENCES `countries` (`Id`),
+  ADD CONSTRAINT `country_trip_ibfk_2` FOREIGN KEY (`trip_id`) REFERENCES `trips` (`Id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

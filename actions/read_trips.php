@@ -3,34 +3,34 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once '../config/db_connection.php';
-include_once '../models/modello.php';
+include_once '../models/model.php';
 
 $database = new Database();
 $db = $database->getConnection();
 
-$viaggio = new Trip($db);
+$trip = new Trip($db);
 
-$Nome_paese = isset($_GET['Nome_paese']) ? $_GET['Nome_paese'] : null;
-$Posti_disponibili = isset($_GET['Posti_disponibili']) ? $_GET['Posti_disponibili'] : null;
+$country_name = isset($_GET['country_name']) ? $_GET['country_name'] : null;
+$availability = isset($_GET['availability']) ? $_GET['availability'] : null;
 
-$stmt = $viaggio->readTrips($Nome_paese, $Posti_disponibili);
+$stmt = $trip->readTrips($country_name, $availability);
 $num = $stmt->rowCount();
 
 if ($num > 0) {
 
-    $viaggio_arr = array();
-    $viaggio_arr["viaggi"] = array();
+    $trip_arr = array();
+    $trip_arr["trips"] = array();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         extract($row);
-        $viaggio_item = array(
+        $trip_item = array(
             "Id" => $Id,
-            "Nome_viaggio" => $Nome_viaggio,
-            "Posti_disponibili" => $Posti_disponibili,
-            "Paesi" => $Paesi
+            "trip_name" => $trip_name,
+            "availability" => $availability,
+            "countries" => $countries
         );
-        array_push($viaggio_arr["viaggi"], $viaggio_item);
+        array_push($trip_arr["trips"], $trip_item);
     }
-    echo json_encode($viaggio_arr);
+    echo json_encode($trip_arr);
 } else {
     echo json_encode(
         array("message" => "Nessun Viaggio Trovato.")

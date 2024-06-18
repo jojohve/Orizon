@@ -6,25 +6,25 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 include_once '../config/db_connection.php';
-include_once '../models/modello.php';
+include_once '../models/model.php';
 
 $database = new Database();
 $db = $database->getConnection();
-$viaggio = new Trip($db);
+$trip = new Trip($db);
 $data = json_decode(file_get_contents("php://input"));
 if(
     !empty($data->Id) &&
-    !empty($data->Nome_viaggio) &&
-    !empty($data->Posti_disponibili) &&
-    !empty($data->paesi_ids) &&
-    is_array($data->paesi_ids) 
+    !empty($data->trip_name) &&
+    !empty($data->availability) &&
+    !empty($data->countries_ids) &&
+    is_array($data->countries_ids) 
 ){
-    $viaggio->Id = $data->Id;
-    $viaggio->Nome_viaggio = $data->Nome_viaggio;
-    $viaggio->Posti_disponibili = $data->Posti_disponibili;
-    $viaggio->paesi_ids = $data->paesi_ids;
+    $trip->Id = $data->Id;
+    $trip->trip_name = $data->trip_name;
+    $trip->availability = $data->availability;
+    $trip->countries_ids = $data->countries_ids;
  
-    if($viaggio->createTrip()){
+    if($trip->createTrip()){
         http_response_code(201);
         echo json_encode(array("message" => "Viaggio creato correttamente."));
     }

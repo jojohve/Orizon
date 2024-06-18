@@ -2,9 +2,9 @@
 class Country
 {
     private $conn;
-    private $table_name = "paesi";
+    private $table_name = "countries";
     public $Id;
-    public $Nome_paese;
+    public $country_name;
     public function __construct($db)
     {
         $this->conn = $db;
@@ -14,7 +14,7 @@ class Country
     function readCountries()
     {
         $query = "SELECT
-                    Id, Nome_paese
+                    Id, country_name
                 FROM
                " . $this->table_name;
         $stmt = $this->conn->prepare($query);
@@ -25,15 +25,15 @@ class Country
     // CREATE COUNTRY
     function createCountry()
     {
-        $query = "INSERT INTO " . $this->table_name . " (Id, Nome_paese) VALUES (:Id, :Nome_paese)";
+        $query = "INSERT INTO " . $this->table_name . " (Id, country_name) VALUES (:Id, :country_name)";
 
         $stmt = $this->conn->prepare($query);
 
         $this->Id = htmlspecialchars(strip_tags($this->Id));
-        $this->Nome_paese = htmlspecialchars(strip_tags($this->Nome_paese));
+        $this->country_name = htmlspecialchars(strip_tags($this->country_name));
 
         $stmt->bindParam(":Id", $this->Id);
-        $stmt->bindParam(":Nome_paese", $this->Nome_paese);
+        $stmt->bindParam(":country_name", $this->country_name);
 
         if ($stmt->execute()) {
             return true;
@@ -46,16 +46,16 @@ class Country
     {
 
         $query = "UPDATE " . $this->table_name . " 
-        SET Nome_paese = :Nome_paese 
+        SET country_name = :country_name 
         WHERE Id = :Id";
 
         $stmt = $this->conn->prepare($query);
 
         $this->Id = htmlspecialchars(strip_tags($this->Id));
-        $this->Nome_paese = htmlspecialchars(strip_tags($this->Nome_paese));
+        $this->country_name = htmlspecialchars(strip_tags($this->country_name));
 
         $stmt->bindParam(":Id", $this->Id);
-        $stmt->bindParam(":Nome_paese", $this->Nome_paese);
+        $stmt->bindParam(":country_name", $this->country_name);
 
         if ($stmt->execute()) {
             return true;
@@ -86,54 +86,54 @@ class Country
 class Trip
 {
     private $conn;
-    private $table_name = "viaggi";
+    private $table_name = "trips";
     public $Id;
-    public $Nome_viaggio;
-    public $Posti_disponibili;
-    public $paesi_ids = [];
+    public $trip_name;
+    public $availability;
+    public $countries_ids = [];
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
     // READ ALL TRIPS
-    function readTrips($Nome_paese = null, $Posti_disponibili = null)
+    function readTrips($country_name = null, $availability = null)
     {
         $query = "
             SELECT
-                viaggi.Id,
-                viaggi.Nome_viaggio,
-                viaggi.Posti_disponibili,
-                GROUP_CONCAT(paesi.Nome_paese) AS Paesi
+                trips.Id,
+                trips.trip_name,
+                trips.availability,
+                GROUP_CONCAT(countries.country_name) AS countries
             FROM
-                viaggi
+                trips
             LEFT JOIN
-                paesi_nei_viaggi ON viaggi.Id = paesi_nei_viaggi.viaggio_id
+                country_trip ON trips.Id = country_trip.trip_id
             LEFT JOIN
-                paesi ON paesi_nei_viaggi.paese_id = paesi.Id";
+                countries ON country_trip.country_id = countries.Id";
 
         $conditions = [];
-        if (!is_null($Nome_paese)) {
-            $conditions[] = "paesi.Nome_paese LIKE :Nome_paese";
+        if (!is_null($country_name)) {
+            $conditions[] = "countries.country_name LIKE :country_name";
         }
-        if (!is_null($Posti_disponibili)) {
-            $conditions[] = "viaggi.Posti_disponibili = :Posti_disponibili";
+        if (!is_null($availability)) {
+            $conditions[] = "trips.availability = :availability";
         }
 
         if (count($conditions) > 0) {
             $query .= " WHERE " . implode(' AND ', $conditions);
         }
 
-        $query .= " GROUP BY viaggi.Id, viaggi.Nome_viaggio, viaggi.Posti_disponibili";
+        $query .= " GROUP BY trips.Id, trips.trip_name, trips.availability";
 
         $stmt = $this->conn->prepare($query);
 
-        if (!is_null($Nome_paese)) {
-            $Nome_paese = "%{$Nome_paese}%";
-            $stmt->bindParam(':Nome_paese', $Nome_paese);
+        if (!is_null($country_name)) {
+            $country_name = "%{$country_name}%";
+            $stmt->bindParam(':country_name', $country_name);
         }
-        if (!is_null($Posti_disponibili)) {
-            $stmt->bindParam(':Posti_disponibili', $Posti_disponibili);
+        if (!is_null($availability)) {
+            $stmt->bindParam(':availability', $availability);
         }
 
         $stmt->execute();
@@ -144,24 +144,24 @@ class Trip
     // CREATE TRIP
     function createTrip()
     {
-        $query = "INSERT INTO viaggi (Id, Nome_viaggio, Posti_disponibili) VALUES (:Id, :Nome_viaggio, :Posti_disponibili)";
+        $query = "INSERT INTO trips (Id, trip_name, availability) VALUES (:Id, :trip_name, :availability)";
 
         $stmt = $this->conn->prepare($query);
 
         $this->Id = htmlspecialchars(strip_tags($this->Id));
-        $this->Nome_viaggio = htmlspecialchars(strip_tags($this->Nome_viaggio));
-        $this->Posti_disponibili = htmlspecialchars(strip_tags($this->Posti_disponibili));
+        $this->trip_name = htmlspecialchars(strip_tags($this->trip_name));
+        $this->availability = htmlspecialchars(strip_tags($this->availability));
 
         $stmt->bindParam(":Id", $this->Id);
-        $stmt->bindParam(":Nome_viaggio", $this->Nome_viaggio);
-        $stmt->bindParam(":Posti_disponibili", $this->Posti_disponibili);
+        $stmt->bindParam(":trip_name", $this->trip_name);
+        $stmt->bindParam(":availability", $this->availability);
 
         if ($stmt->execute()) {
-            foreach ($this->paesi_ids as $paese_id) {
-                $query_rel = "INSERT INTO paesi_nei_viaggi (viaggio_id, paese_id) VALUES (:viaggio_id, :paese_id)";
+            foreach ($this->countries_ids as $country_id) {
+                $query_rel = "INSERT INTO country_trip (trip_id, country_id) VALUES (:trip_id, :country_id)";
                 $stmt_rel = $this->conn->prepare($query_rel);
-                $stmt_rel->bindParam(':viaggio_id', $this->Id);
-                $stmt_rel->bindParam(':paese_id', $paese_id);
+                $stmt_rel->bindParam(':trip_id', $this->Id);
+                $stmt_rel->bindParam(':country_id', $country_id);
                 $stmt_rel->execute();
             }
             return true;
@@ -173,28 +173,28 @@ class Trip
     function updateTrip()
     {
 
-        $query = "UPDATE viaggi SET Nome_viaggio = :Nome_viaggio, Posti_disponibili = :Posti_disponibili WHERE Id = :Id";
+        $query = "UPDATE trips SET trip_name = :trip_name, availability = :availability WHERE Id = :Id";
 
         $stmt = $this->conn->prepare($query);
 
         $this->Id = htmlspecialchars(strip_tags($this->Id));
-        $this->Nome_viaggio = htmlspecialchars(strip_tags($this->Nome_viaggio));
-        $this->Posti_disponibili = htmlspecialchars(strip_tags($this->Posti_disponibili));
+        $this->trip_name = htmlspecialchars(strip_tags($this->trip_name));
+        $this->availability = htmlspecialchars(strip_tags($this->availability));
 
         $stmt->bindParam(":Id", $this->Id);
-        $stmt->bindParam(":Nome_viaggio", $this->Nome_viaggio);
-        $stmt->bindParam(":Posti_disponibili", $this->Posti_disponibili);
+        $stmt->bindParam(":trip_name", $this->trip_name);
+        $stmt->bindParam(":availability", $this->availability);
 
         if ($stmt->execute()) {
-            $query_del_rel = "DELETE FROM paesi_nei_viaggi WHERE viaggio_id = :viaggio_id";
+            $query_del_rel = "DELETE FROM country_trip WHERE trip_id = :trip_id";
             $stmt_del_rel = $this->conn->prepare($query_del_rel);
-            $stmt_del_rel->bindParam(':viaggio_id', $this->Id);
+            $stmt_del_rel->bindParam(':trip_id', $this->Id);
             $stmt_del_rel->execute();
-            foreach ($this->paesi_ids as $paese_id) {
-                $query_rel = "INSERT INTO paesi_nei_viaggi (viaggio_id, paese_id) VALUES (:viaggio_id, :paese_id)";
+            foreach ($this->countries_ids as $country_id) {
+                $query_rel = "INSERT INTO country_trip (trip_id, country_id) VALUES (:trip_id, :country_id)";
                 $stmt_rel = $this->conn->prepare($query_rel);
-                $stmt_rel->bindParam(':viaggio_id', $this->Id);
-                $stmt_rel->bindParam(':paese_id', $paese_id);
+                $stmt_rel->bindParam(':trip_id', $this->Id);
+                $stmt_rel->bindParam(':country_id', $country_id);
                 $stmt_rel->execute();
             }
             return true;
@@ -205,9 +205,9 @@ class Trip
     //DELETE TRIP
     function deleteTrip()
     {
-        $query_rel = "DELETE FROM paesi_nei_viaggi WHERE viaggio_id = :viaggio_id";
+        $query_rel = "DELETE FROM country_trip WHERE trip_id = :trip_id";
         $stmt_rel = $this->conn->prepare($query_rel);
-        $stmt_rel->bindParam(':viaggio_id', $this->Id);
+        $stmt_rel->bindParam(':trip_id', $this->Id);
 
         if ($stmt_rel->execute()) {
             $query = "DELETE FROM " . $this->table_name . " WHERE Id = :Id";

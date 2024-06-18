@@ -3,29 +3,29 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 include_once '../config/db_connection.php';
-include_once '../models/modello.php';
+include_once '../models/model.php';
 
 $database = new Database();
 $db = $database->getConnection();
 
-$paese = new Country($db);
+$country = new Country($db);
 
-$stmt = $paese->readCountries();
+$stmt = $country->readCountries();
 $num = $stmt->rowCount();
 
 if ($num > 0) {
 
-    $paese_arr = array();
-    $paese_arr["paesi"] = array();
+    $country_arr = array();
+    $country_arr["countries"] = array();
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         extract($row);
-        $paese_item = array(
+        $country_item = array(
             "Id" => $Id,
-            "Nome_paese" => $Nome_paese
+            "country_name" => $country_name
         );
-        array_push($paese_arr["paesi"], $paese_item);
+        array_push($country_arr["countries"], $country_item);
     }
-    echo json_encode($paese_arr);
+    echo json_encode($country_arr);
 } else {
     echo json_encode(
         array("message" => "Nessun Paese Trovato.")

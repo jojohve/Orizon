@@ -6,19 +6,19 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 include_once '../config/db_connection.php';
-include_once '../models/modello.php';
+include_once '../models/model.php';
 
 $database = new Database();
 $db = $database->getConnection();
 
-$paese = new Country($db);
+$country = new Country($db);
 
 $data = json_decode(file_get_contents("php://input"));
 
-$paese->Id = $data->Id;
-$paese->Nome_paese = $data->Nome_paese;
+$country->Id = $data->Id;
+$country->country_name = $data->country_name;
 
-if ($paese->updateCountry()) {
+if ($country->updateCountry()) {
     http_response_code(200);
     echo json_encode(array("risposta" => "Paese aggiornato"));
 } else {
