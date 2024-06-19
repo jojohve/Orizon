@@ -1,6 +1,6 @@
 <?php
 
-require_once '../config/database.php';
+require_once '../config/db_connection.php';
 require_once '../models/Country.php';
 
 class CountryController
