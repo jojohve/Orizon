@@ -1,20 +1,22 @@
 <?php
-class Database
-{
-    private $host = "localhost";
-    private $db_name = "orizon";
-    private $username = "root";
-    private $password = "";
-    public $conn;
-    public function getConnection()
-    {
-        $this->conn = null;
-        try {
-            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
-            $this->conn->exec("set names utf8");
-        } catch (PDOException $exception) {
-            echo "Connection Error: " . $exception->getMessage();
+
+class Database {
+    private $connection;
+
+    public function __construct() {
+        $this->connection = new mysqli(
+            $_ENV['DB_HOST'],
+            $_ENV['DB_USER'],
+            $_ENV['DB_PASS'],
+            $_ENV['DB_NAME']
+        );
+
+        if ($this->connection->connect_error) {
+            die("Connection failed: " . $this->connection->connect_error);
         }
-        return $this->conn;
+    }
+
+    public function getConnection() {
+        return $this->connection;
     }
 }

@@ -27,7 +27,7 @@ if (
     $trip->availability = $data->availability;
     $trip->countries_ids = $data->countries_ids;
 
-    if ($viaggio->updateTrip()) {
+    if ($trip->updateTrip()) {
         http_response_code(200);
         echo json_encode(array("message" => "Viaggio aggiornato correttamente."));
     } else {
