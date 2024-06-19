@@ -1,7 +1,7 @@
 <?php
 
-include_once '../config/db_connection.php';
-require_once 'models/Trip.php';
+require_once '../config/database.php';
+require_once '../models/Trip.php';
 
 class TripController
 {
