@@ -1,33 +1,31 @@
 <?php
 
+require_once 'models/Country.php';
+
 class CountryController {
-    public function getCountries() {
-        // Logica per ottenere tutti i paesi
-        require 'models/Country.php';
-        $countries = Country::readCountries(); // Supponendo che ci sia un metodo getAll() nel modello Country
+    public function readCountries() {
+        $country = new Country();
+        $countries = $country->readCountries();
         echo json_encode($countries);
     }
 
     public function createCountry() {
-        // Logica per creare un nuovo paese
-        require 'models/Country.php';
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = Country::createCountry($data); // Supponendo che ci sia un metodo create() nel modello Country
+        $country = new Country();
+        $result = $country->createCountry($data);
         echo json_encode($result);
     }
 
-    public function updateCountry($id) {
-        // Logica per aggiornare un paese specifico
-        require 'models/Country.php';
+    public function updateCountry($Id) {
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = Country::updateCountry($id, $data); // Supponendo che ci sia un metodo update() nel modello Country
+        $country = new Country();
+        $result = $country->updateCountry($Id, $data);
         echo json_encode($result);
     }
 
-    public function deleteCountry($id) {
-        // Logica per eliminare un paese specifico
-        require 'models/Country.php';
-        $result = Country::deleteCountry($id); // Supponendo che ci sia un metodo delete() nel modello Country
+    public function deleteCountry($Id) {
+        $country = new Country();
+        $result = $country->deleteCountry($Id);
         echo json_encode($result);
     }
 }
