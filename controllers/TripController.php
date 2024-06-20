@@ -1,46 +1,25 @@
 <?php
 
-require_once '../config/db_connection.php';
-require_once '../models/Trip.php';
+require_once (__DIR__ . '/../config/db_connection.php');
+require_once (__DIR__ . '/../models/Trip.php');
 
 class TripController
 {
+    private $db;
+
+    public function __construct()
+    {
+        $database = new Database();
+        $this->db = $database->getConnection();
+    }
+
     public function readTrips()
     {
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=UTF-8");
 
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $trip = new Trip($db);
-
-        $country_name = isset($_GET['country_name']) ? $_GET['country_name'] : null;
-        $availability = isset($_GET['availability']) ? $_GET['availability'] : null;
-
-        $stmt = $trip->readTrips($country_name, $availability);
-        $num = $stmt->rowCount();
-
-        if ($num > 0) {
-
-            $trip_arr = array();
-            $trip_arr["trips"] = array();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                extract($row);
-                $trip_item = array(
-                    "Id" => $Id,
-                    "trip_name" => $trip_name,
-                    "availability" => $availability,
-                    "countries" => $countries
-                );
-                array_push($trip_arr["trips"], $trip_item);
-            }
-            echo json_encode($trip_arr);
-        } else {
-            echo json_encode(
-                array("message" => "Nessun Viaggio Trovato.")
-            );
-        }
+        $tripModel = new Trip($this->db);
+        $trips = $tripModel->readTrips();
     }
 
     public function createTrip()
@@ -51,9 +30,7 @@ class TripController
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-        $database = new Database();
-        $db = $database->getConnection();
-        $trip = new Trip($db);
+        $trip = new Trip($this->db);
         $data = json_decode(file_get_contents("php://input"));
         if (
             !empty($data->Id) &&

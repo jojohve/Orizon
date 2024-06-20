@@ -1,7 +1,7 @@
 <?php
 
-require_once '../config/db_connection.php';
-require_once '../models/Country.php';
+require_once(__DIR__ . '/../config/db_connection.php');
+require_once(__DIR__ . '/../models/Country.php');
 
 class CountryController
 {

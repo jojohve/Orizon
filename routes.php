@@ -5,7 +5,7 @@ return [
         'route' => '/trips',
         'method' => 'GET',
         'controller' => 'TripController',
-        'action' => 'getTrips'
+        'action' => 'readTrips'
     ],
     [
         'route' => '/trips',
@@ -30,7 +30,7 @@ return [
         'route' => '/countries',
         'method' => 'GET',
         'controller' => 'CountryController',
-        'action' => 'getCountries'
+        'action' => 'readCountries'
     ],
     [
         'route' => '/countries',
