@@ -1,7 +1,6 @@
 <?php
-
-require_once(__DIR__ . '/../config/db_connection.php');
-require_once(__DIR__ . '/../models/Country.php');
+require_once (__DIR__ . '/../config/db_connection.php');
+require_once (__DIR__ . '/../models/Country.php');
 
 class CountryController
 {
@@ -15,26 +14,13 @@ class CountryController
 
         $country = new Country($db);
 
-        $stmt = $country->readCountries();
-        $num = $stmt->rowCount();
+        $countries = $country->readCountries();
 
-        if ($num > 0) {
-
-            $country_arr = array();
-            $country_arr["countries"] = array();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                extract($row);
-                $country_item = array(
-                    "Id" => $Id,
-                    "country_name" => $country_name
-                );
-                array_push($country_arr["countries"], $country_item);
-            }
-            echo json_encode($country_arr);
+        if (!empty($countries)) {
+            echo json_encode(array("countries" => $countries));
         } else {
-            echo json_encode(
-                array("message" => "Nessun Paese Trovato.")
-            );
+            http_response_code(404);
+            echo json_encode(array("message" => "Nessun Paese Trovato."));
         }
     }
 
@@ -48,12 +34,12 @@ class CountryController
 
         $database = new Database();
         $db = $database->getConnection();
+
         $country = new Country($db);
+
         $data = json_decode(file_get_contents("php://input"));
-        if (
-            !empty($data->Id) &&
-            !empty($data->country_name)
-        ) {
+
+        if (!empty($data->Id) && !empty($data->country_name)) {
             $country->Id = $data->Id;
             $country->country_name = $data->country_name;
 
@@ -74,10 +60,9 @@ class CountryController
     {
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Allow-Methods: PUT");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
 
         $database = new Database();
         $db = $database->getConnection();
@@ -86,15 +71,20 @@ class CountryController
 
         $data = json_decode(file_get_contents("php://input"));
 
-        $country->Id = $data->Id;
-        $country->country_name = $data->country_name;
+        if (!empty($data->country_name)) {
+            $country->Id = $Id;
+            $country->country_name = $data->country_name;
 
-        if ($country->updateCountry()) {
-            http_response_code(200);
-            echo json_encode(array("risposta" => "Paese aggiornato"));
+            if ($country->updateCountry()) {
+                http_response_code(200);
+                echo json_encode(array("message" => "Paese aggiornato correttamente."));
+            } else {
+                http_response_code(503);
+                echo json_encode(array("message" => "Impossibile aggiornare il Paese."));
+            }
         } else {
-            http_response_code(503);
-            echo json_encode(array("risposta" => "Impossibile aggiornare il Paese"));
+            http_response_code(400);
+            echo json_encode(array("message" => "Impossibile aggiornare il Paese, i dati sono incompleti."));
         }
     }
 
@@ -102,7 +92,7 @@ class CountryController
     {
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Allow-Methods: DELETE");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
@@ -113,14 +103,14 @@ class CountryController
 
         $data = json_decode(file_get_contents("php://input"));
 
-        $country->Id = $data->Id;
+        $country->Id = $Id;
 
         if ($country->deleteCountry()) {
             http_response_code(200);
-            echo json_encode(array("risposta" => "Il Paese e' stato eliminato"));
+            echo json_encode(array("message" => "Il Paese è stato eliminato correttamente."));
         } else {
             http_response_code(503);
-            echo json_encode(array("risposta" => "Impossibile eliminare il Paese."));
+            echo json_encode(array("message" => "Impossibile eliminare il Paese."));
         }
     }
 }

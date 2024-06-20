@@ -14,13 +14,13 @@ return [
         'action' => 'createTrip'
     ],
     [
-        'route' => '/trips/{id}',
+        'route' => '/trips/{Id}',
         'method' => 'PUT',
         'controller' => 'TripController',
         'action' => 'updateTrip'
     ],
     [
-        'route' => '/trips/{id}',
+        'route' => '/trips/{Id}',
         'method' => 'DELETE',
         'controller' => 'TripController',
         'action' => 'deleteTrip'
@@ -39,13 +39,13 @@ return [
         'action' => 'createCountry'
     ],
     [
-        'route' => '/countries/{id}',
+        'route' => '/countries/{Id}',
         'method' => 'PUT',
         'controller' => 'CountryController',
         'action' => 'updateCountry'
     ],
     [
-        'route' => '/countries/{id}',
+        'route' => '/countries/{Id}',
         'method' => 'DELETE',
         'controller' => 'CountryController',
         'action' => 'deleteCountry'

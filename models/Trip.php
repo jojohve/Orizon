@@ -1,5 +1,4 @@
 <?php
-
 class Trip
 {
     private $conn;
@@ -8,6 +7,7 @@ class Trip
     public $trip_name;
     public $availability;
     public $countries_ids = [];
+
     public function __construct($db)
     {
         $this->conn = $db;
@@ -55,7 +55,14 @@ class Trip
 
         $stmt->execute();
 
-        return $stmt;
+        $results = $stmt->get_result();
+
+        $trips = array();
+        while ($row = $results->fetch_assoc()) {
+            $trips[] = $row;
+        }
+
+        return $trips;
     }
 
     // CREATE TRIP
@@ -86,10 +93,9 @@ class Trip
         return false;
     }
 
-    //UPDATE TRIP
+    // UPDATE TRIP
     function updateTrip()
     {
-
         $query = "UPDATE trips SET trip_name = :trip_name, availability = :availability WHERE Id = :Id";
 
         $stmt = $this->conn->prepare($query);
@@ -119,7 +125,7 @@ class Trip
         return false;
     }
 
-    //DELETE TRIP
+    // DELETE TRIP
     function deleteTrip()
     {
         $query_rel = "DELETE FROM country_trip WHERE trip_id = :trip_id";

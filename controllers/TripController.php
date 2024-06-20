@@ -1,5 +1,4 @@
 <?php
-
 require_once (__DIR__ . '/../config/db_connection.php');
 require_once (__DIR__ . '/../models/Trip.php');
 
@@ -20,6 +19,8 @@ class TripController
 
         $tripModel = new Trip($this->db);
         $trips = $tripModel->readTrips();
+
+        echo json_encode(array("trips" => $trips));
     }
 
     public function createTrip()
@@ -61,14 +62,11 @@ class TripController
     {
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Allow-Methods: PUT");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $trip = new Trip($db);
+        $trip = new Trip($this->db);
 
         $data = json_decode(file_get_contents("php://input"));
 
@@ -101,14 +99,11 @@ class TripController
     {
         header("Access-Control-Allow-Origin: *");
         header("Content-Type: application/json; charset=UTF-8");
-        header("Access-Control-Allow-Methods: POST");
+        header("Access-Control-Allow-Methods: DELETE");
         header("Access-Control-Max-Age: 3600");
         header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $trip = new Trip($db);
+        $trip = new Trip($this->db);
 
         $data = json_decode(file_get_contents("php://input"));
 
@@ -116,10 +111,10 @@ class TripController
 
         if ($trip->deleteTrip()) {
             http_response_code(200);
-            echo json_encode(array("risposta" => "Il Viaggio e' stato eliminato"));
+            echo json_encode(array("message" => "Il Viaggio è stato eliminato correttamente."));
         } else {
             http_response_code(503);
-            echo json_encode(array("risposta" => "Impossibile eliminare il Viaggio."));
+            echo json_encode(array("message" => "Impossibile eliminare il Viaggio."));
         }
     }
 }

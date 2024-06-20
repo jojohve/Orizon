@@ -1,9 +1,11 @@
 <?php
 
-class Database {
+class Database
+{
     private $conn;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->conn = new mysqli(
             $_ENV['DB_HOST'],
             $_ENV['DB_USER'],
@@ -12,11 +14,15 @@ class Database {
         );
 
         if ($this->conn->connect_error) {
+            error_log("Connection failed: " . $this->conn->connect_error);
             die("Connection failed: " . $this->conn->connect_error);
         }
+
+        $this->conn->set_charset("utf8");
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->conn;
     }
 }
