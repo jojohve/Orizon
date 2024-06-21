@@ -75,13 +75,17 @@ class Country
     // DELETE COUNTRY
     function deleteCountry()
     {
-        $query = "DELETE FROM " . $this->table_name . " WHERE Id = :Id";
+        $query = "DELETE FROM " . $this->table_name . " WHERE Id = ?";
 
         $stmt = $this->conn->prepare($query);
 
+        if (!$stmt) {
+            die('Errore nella preparazione della query: ' . $this->conn->error);
+        }
+
         $this->Id = htmlspecialchars(strip_tags($this->Id));
 
-        $stmt->bindParam(':Id', $this->Id);
+        $stmt->bind_param('i', $this->Id);
 
         if ($stmt->execute()) {
             return true;

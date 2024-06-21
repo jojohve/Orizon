@@ -15,7 +15,8 @@ class Router
         $method = strtoupper($method);
 
         foreach ($this->routes as $route) {
-            if ($route['method'] === $method && preg_match("#^{$route['route']}$#", $uri, $matches)) {
+            $pattern = preg_replace('/\{[a-zA-Z]+\}/', '([a-zA-Z0-9_\-]+)', $route['route']);
+            if ($route['method'] === $method && preg_match("#^$pattern$#", $uri, $matches)) {
                 $controllerName = $route['controller'];
                 $action = $route['action'];
 
