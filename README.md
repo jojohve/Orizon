@@ -1,5 +1,3 @@
-Orizon
-
 Orizon è un'applicazione progettata per start2impact.
 Requisiti:
 
